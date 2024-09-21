@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const sections = [
-  { id: 'hot-drinks', name: 'Hot Drinks ☕🍵', options: 12 },
-  { id: 'snacks', name: 'Snacks 🍪🍿', options: 9, subSections: [{ id: 'special-snacks', name: 'Special Snacks 🍰🍩', options: 4 }] },
-  { id: 'juices', name: 'Juices 🍹🍊', options: 4 },
-  { id: 'shakes', name: 'Shakes 🥤🍓', options: 5 },
-  { id: 'creams', name: 'Creams 🍦🍨', options: 4 },
-  { id: 'meals', name: 'Meals 🍖🍗', subSections: [
-    { id: 'meat-lovers', name: 'Meat Lovers 🥩🍔', options: 19 },
-    { id: 'chicken-corner', name: 'Chicken Corner 🍗🍖', options: 13 }
-  ]},
-  { id: 'cereals', name: 'Cereals 🥣🌾', options: 14 }
-];
+interface FoodItem {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+}
+
+interface SubSection {
+  id: string;
+  name: string;
+  foodItems: FoodItem[];
+}
+
+interface Section {
+  id: string;
+  name: string;
+  foodItems: FoodItem[];
+  subSections: SubSection[];
+}
 
 const Menu: React.FC = () => {
+  const [sections, setSections] = useState<Section[]>([]);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/sections');
+        setSections(response.data);
+      } catch (error) {
+        console.error('Error fetching sections:', error);
+      }
+    };
+
+    fetchSections();
+  }, []);
 
   const handleSectionClick = (sectionId: string) => {
     setActiveSection(sectionId === activeSection ? null : sectionId);
@@ -36,11 +58,28 @@ const Menu: React.FC = () => {
               </h3>
               {activeSection === section.id && (
                 <div className="mt-2 sm:mt-4">
-                  <p className="text-gray-600">Options: {section.options}</p>
+                  <h4 className="text-lg font-semibold">Food Items:</h4>
+                  <ul className="list-disc list-inside">
+                    {section.foodItems.map(item => (
+                      <li key={item.id} className="mt-1">
+                        <strong>{item.name}</strong> - ${item.price.toFixed(2)}
+                        <br />
+                        <img src={item.image} alt={item.name} className="w-32 h-32 object-cover mt-2" />
+                      </li>
+                    ))}
+                  </ul>
                   {section.subSections && section.subSections.map(subSection => (
                     <div key={subSection.id} className="mt-2">
                       <h4 className="text-lg font-semibold">{subSection.name}</h4>
-                      <p className="text-gray-600">Options: {subSection.options}</p>
+                      <ul className="list-disc list-inside">
+                        {subSection.foodItems.map(item => (
+                          <li key={item.id} className="mt-1">
+                            <strong>{item.name}</strong> - ${item.price.toFixed(2)}
+                            <br />
+                            <img src={item.image} alt={item.name} className="w-32 h-32 object-cover mt-2" />
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   ))}
                 </div>
