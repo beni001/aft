@@ -13,19 +13,38 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <HeroSection />
-      <Menu />
-      <CateringServices />
-      <AboutUs />
-      <Reservations />
-      <Testimonials />
-      <Gallery/>
-      <ContactUs/>
-      <Footer/>
+      <div className="section">
+        <HeroSection />
+      </div>
+      <div className="section">
+        <Menu />
+      </div>
+      <div className="section">
+        <CateringServices />
+      </div>
+      <div className="section">
+        <AboutUs />
+      </div>
+      <div className="section">
+        <Reservations />
+      </div>
+      <div className="section">
+        <Testimonials />
+      </div>
+      <div className="section">
+        <Gallery />
+      </div>
+      <div className="section">
+        <ContactUs />
+      </div>
+      <div className="section">
+        <Footer />
+      </div>
 
       {/* Other components will be added here */}
     </div>
   );
 }
+
 
 export default App;
