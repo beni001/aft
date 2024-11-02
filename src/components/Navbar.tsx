@@ -1,31 +1,44 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
+import { FaBars, FaHome, FaUtensils, FaInfoCircle, FaEnvelope } from "react-icons/fa"; // Importing necessary icons
 
-const Menu = [
-  {
-    id: 1,
-    name: "Home",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Menu",
-    link: "/#menu",
-  },
-  {
-    id: 3,
-    name: "About",
-    link: "/#about",
-  },
-  {
-    id: 4,
-    name: "Contact",
-    link: "/#contact",
-  },
+// Define the structure of a menu item
+interface MenuItem {
+  id: number;
+  name: string;
+  link: string;
+  icon: JSX.Element; // Add an icon property
+}
+
+// Define the structure of a cart item
+interface CartItem {
+  name: string;
+}
+
+const Menu: MenuItem[] = [
+  { id: 1, name: "Home", link: "/#", icon: <FaHome /> },
+  { id: 2, name: "Menu", link: "/#menu", icon: <FaUtensils /> },
+  { id: 3, name: "About", link: "/#about", icon: <FaInfoCircle /> },
+  { id: 4, name: "Contact", link: "/#contact", icon: <FaEnvelope /> },
 ];
 
 const Navbar: React.FC = () => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [cartItems] = useState<CartItem[]>([]); // Specify the type here
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+    // Close the menu dropdown when opening the cart dropdown
+    if (isMenuOpen) setMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+    // Close the cart dropdown when opening the menu dropdown
+    if (isDropdownOpen) setDropdownOpen(false);
+  };
+
   return (
     <div className="shadow-md bg-[#e8a507] text-black">
       <div className="container mx-auto px-4 py-3">
@@ -35,43 +48,75 @@ const Navbar: React.FC = () => {
             href="#"
             className="font-bold text-2xl sm:text-3xl flex gap-2 items-center"
           >
-            {/* Replace with your logo */}
             <span className="text-3xl">🍽️</span>
             African Fresh Twists
           </a>
 
-          {/* Menu Items */}
+          {/* Order Button / Dropdown Cart Icon */}
+          <div className="relative">
+            <button
+              onClick={toggleDropdown}
+              className="ml-4 bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-full flex items-center gap-2 transition duration-300"
+            >
+              <FaCartShopping className="text-xl" />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 bg-white text-black shadow-md mt-2 rounded-md z-10">
+                <div className="p-2">
+                  {cartItems.length > 0 ? (
+                    cartItems.map((item, index) => (
+                      <div key={index} className="py-1">
+                        {item.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-1">Your cart is empty.</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Menu Icon */}
+          <div className="relative sm:hidden">
+            <button
+              onClick={toggleMenu}
+              className="ml-4 bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-full flex items-center gap-2 transition duration-300"
+            >
+              <FaBars className="text-xl" />
+            </button>
+            {isMenuOpen && (
+              <div className="absolute right-0 bg-white text-black shadow-md mt-2 rounded-md z-10">
+                <div className="flex flex-col">
+                  {Menu.map((menu) => (
+                    <a
+                      key={menu.id}
+                      href={menu.link}
+                      className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 transition duration-300"
+                    >
+                      {menu.icon}
+                      <span>{menu.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Menu Items */}
           <div className="hidden sm:flex items-center space-x-6">
             {Menu.map((menu) => (
               <a
                 key={menu.id}
                 href={menu.link}
-                className="hover:text-white transition duration-300"
+                className="flex items-center space-x-2 hover:text-white transition duration-300"
               >
-                {menu.name}
+                {menu.icon}
+                <span>{menu.name}</span>
               </a>
             ))}
           </div>
-
-          {/* Order Button */}
-          <button className="ml-4 bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-full flex items-center gap-2 transition duration-300">
-            Order Now
-            <FaCartShopping className="text-xl" />
-          </button>
         </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className="sm:hidden flex flex-col space-y-2 px-4 pb-4">
-        {Menu.map((menu) => (
-          <a
-            key={menu.id}
-            href={menu.link}
-            className="hover:text-white transition duration-300"
-          >
-            {menu.name}
-          </a>
-        ))}
       </div>
     </div>
   );

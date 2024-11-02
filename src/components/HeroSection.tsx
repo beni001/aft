@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import FoodDoodle from './FoodDoodle';
 
 const topItems = [
@@ -12,27 +12,18 @@ const topItems = [
 
 const HeroSection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % topItems.length);
-    }, 1000); // Change active serving every 3 seconds
+    }, 3000); // Change active item every 3 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        left: scrollRef.current.clientWidth * activeIndex,
-        behavior: 'smooth',
-      });
-    }
-  }, [activeIndex]);
-
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
+    <div className="relative min-h-[70vh] sm:min-h-[100vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+
       <div className="absolute inset-0 w-full h-full">
         <FoodDoodle />
       </div>
@@ -44,32 +35,31 @@ const HeroSection: React.FC = () => {
           <p className="text-lg sm:text-xl md:text-2xl mb-10 text-white">
             Experience the fusion of traditional African flavors with a modern twist
           </p>
-          <button className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-4 py-2 sm:px-6 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:opacity-90 transition duration-300 shadow-lg">
+          <button className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-4 py-2 sm:px-6 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg">
             Explore Menu
           </button>
         </div>
-        
-        <div className="md:w-1/2 overflow-hidden">
-          <div ref={scrollRef} className="flex w-full">
-            {topItems.map((item, index) => (
-              <div
-                key={item.id}
-                className="flex-shrink-0 w-full flex flex-col items-center justify-center"
-                style={{ minWidth: '100%' }}
-              >
-                <span className="text-5xl sm:text-6xl md:text-7xl mb-2 sm:mb-4 animate-bounce">{item.icon}</span>
-                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-white">{item.name}</span>
-              </div>
-            ))}
+
+        <div className="md:w-1/2 relative">
+          <div className="absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out">
+            <span className={`text-5xl sm:text-6xl md:text-7xl mb-2 sm:mb-4 animate-bounce`}>
+              {topItems[activeIndex].icon}
+            </span>
+            <span className={`text-lg sm:text-xl md:text-2xl font-semibold text-white`}>
+              {topItems[activeIndex].name}
+            </span>
           </div>
-          <div className="flex justify-center space-x-2 mt-4">
+          <div className="flex justify-center space-x-2 mt-4 h-40">
             {topItems.map((item, index) => (
               <button
                 key={item.id}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === activeIndex ? 'bg-white scale-125' : 'bg-white/50'
                 }`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  setActiveIndex(index);
+                }}
+                aria-label={`Select ${item.name}`}
               />
             ))}
           </div>
