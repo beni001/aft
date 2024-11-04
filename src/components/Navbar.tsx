@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
-import { FaBars, FaHome, FaUtensils, FaInfoCircle, FaEnvelope } from "react-icons/fa"; // Importing necessary icons
+import { FaBars, FaHome, FaUtensils, FaInfoCircle, FaEnvelope } from "react-icons/fa"; 
+import useCart from "../Hooks/useCart"; // Adjust the path as necessary
 
 // Define the structure of a menu item
 interface MenuItem {
   id: number;
   name: string;
   link: string;
-  icon: JSX.Element; // Add an icon property
+  icon: JSX.Element;
 }
 
-// Define the structure of a cart item
-interface CartItem {
-  name: string;
-}
-
+// Define the menu items
 const Menu: MenuItem[] = [
   { id: 1, name: "Home", link: "/#", icon: <FaHome /> },
   { id: 2, name: "Menu", link: "/#menu", icon: <FaUtensils /> },
@@ -25,29 +22,32 @@ const Menu: MenuItem[] = [
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [cartItems] = useState<CartItem[]>([]); // Specify the type here
+  const { cartItems, addItemToCart } = useCart(); // Use the cart hook
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
-    // Close the menu dropdown when opening the cart dropdown
     if (isMenuOpen) setMenuOpen(false);
   };
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
-    // Close the cart dropdown when opening the menu dropdown
     if (isDropdownOpen) setDropdownOpen(false);
   };
 
+  // Function to handle adding an item to the cart
+  const handleAddToCart = (item: { id: string; name: string; price: number }) => {
+    console.log("Clicked item:", item); // Debugging line
+    addItemToCart({ id: item.id.toString(), name: item.name, price: item.price, quantity: 1 });
+  };
+  
+
+  
   return (
     <div className="shadow-md bg-[#e8a507] text-black">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo Section */}
-          <a
-            href="#"
-            className="font-bold text-2xl sm:text-3xl flex gap-2 items-center"
-          >
+          <a href="#" className="font-bold text-2xl sm:text-3xl flex gap-2 items-center">
             <span className="text-3xl">🍽️</span>
             African Fresh Twists
           </a>
@@ -93,6 +93,7 @@ const Navbar: React.FC = () => {
                       key={menu.id}
                       href={menu.link}
                       className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 transition duration-300"
+                      onClick={() => handleAddToCart({ id: menu.id.toString(), name: menu.name, price: 10 })} // Replace 10 with the actual price of the item
                     >
                       {menu.icon}
                       <span>{menu.name}</span>
@@ -110,6 +111,7 @@ const Navbar: React.FC = () => {
                 key={menu.id}
                 href={menu.link}
                 className="flex items-center space-x-2 hover:text-white transition duration-300"
+                onClick={() => handleAddToCart({ id: menu.id.toString(), name: menu.name, price: 10 })} // Replace 10 with the actual price of the item
               >
                 {menu.icon}
                 <span>{menu.name}</span>
