@@ -5,8 +5,10 @@ import dotenv from 'dotenv';
 import Section from './Section.js';
 import Cart from './Cart.js';
 
-dotenv.config();
 
+
+dotenv.config();
+const mongoDbUrl = process.env.MONGODB_URL;
 const app = express();
 const port = process.env.PORT || 5000;
 

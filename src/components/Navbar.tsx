@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaBars, FaHome, FaUtensils, FaInfoCircle, FaEnvelope } from "react-icons/fa"; 
-import useCart from "../Hooks/useCart"; // Adjust the path as necessary
+import useCart from '../Hooks/useCart';
 
 // Define the structure of a menu item
 interface MenuItem {
@@ -22,26 +22,18 @@ const Menu: MenuItem[] = [
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const { cartItems, addItemToCart } = useCart(); // Use the cart hook
+  const { cartItems } = useCart(); // Use the cart hook
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
-    if (isMenuOpen) setMenuOpen(false);
+    if (isMenuOpen) setMenuOpen(false); // Close the menu if open
   };
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
-    if (isDropdownOpen) setDropdownOpen(false);
+    if (isDropdownOpen) setDropdownOpen(false); // Close the dropdown if open
   };
 
-  // Function to handle adding an item to the cart
-  const handleAddToCart = (item: { id: string; name: string; price: number }) => {
-    console.log("Clicked item:", item); // Debugging line
-    addItemToCart({ id: item.id.toString(), name: item.name, price: item.price, quantity: 1 });
-  };
-  
-
-  
   return (
     <div className="shadow-md bg-[#e8a507] text-black">
       <div className="container mx-auto px-4 py-3">
@@ -52,7 +44,7 @@ const Navbar: React.FC = () => {
             African Fresh Twists
           </a>
 
-          {/* Order Button / Dropdown Cart Icon */}
+          {/* Cart Icon */}
           <div className="relative">
             <button
               onClick={toggleDropdown}
@@ -66,7 +58,7 @@ const Navbar: React.FC = () => {
                   {cartItems.length > 0 ? (
                     cartItems.map((item, index) => (
                       <div key={index} className="py-1">
-                        {item.name}
+                        {item.name} - {item.price.toFixed(2)} x {item.quantity}
                       </div>
                     ))
                   ) : (
@@ -77,7 +69,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Menu Icon */}
+          {/* Menu Icon for Mobile */}
           <div className="relative sm:hidden">
             <button
               onClick={toggleMenu}
@@ -93,7 +85,6 @@ const Navbar: React.FC = () => {
                       key={menu.id}
                       href={menu.link}
                       className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 transition duration-300"
-                      onClick={() => handleAddToCart({ id: menu.id.toString(), name: menu.name, price: 10 })} // Replace 10 with the actual price of the item
                     >
                       {menu.icon}
                       <span>{menu.name}</span>
@@ -111,7 +102,6 @@ const Navbar: React.FC = () => {
                 key={menu.id}
                 href={menu.link}
                 className="flex items-center space-x-2 hover:text-white transition duration-300"
-                onClick={() => handleAddToCart({ id: menu.id.toString(), name: menu.name, price: 10 })} // Replace 10 with the actual price of the item
               >
                 {menu.icon}
                 <span>{menu.name}</span>
