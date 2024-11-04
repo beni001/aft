@@ -4,7 +4,6 @@ import HeroSection from './components/HeroSection';
 import Menu from './components/Menu';
 import CateringServices from './components/CateringServices';
 import AboutUs from './components/AboutUs';
-import Reservations from './components/Reservations';
 import Testimonials from './components/Testimonials';
 import Gallery from './components/Gallery';
 import ContactUs from './components/ContactUs';
@@ -22,18 +21,17 @@ function App() {
       <div className="section">
         <CateringServices />
       </div>
+
       <div className="section">
         <AboutUs />
       </div>
       <div className="section">
-        <Reservations />
+        <Gallery />
       </div>
       <div className="section">
         <Testimonials />
       </div>
-      <div className="section">
-        <Gallery />
-      </div>
+     
       <div className="section">
         <ContactUs />
       </div>
