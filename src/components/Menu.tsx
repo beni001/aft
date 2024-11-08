@@ -130,33 +130,55 @@ const Menu: React.FC = () => {
     };
 
     const CategoryCard: React.FC<{ section: Section }> = ({ section }) => {
-        const totalItems = section.foodItems.length + 
-            section.subSections.reduce((sum, sub) => sum + sub.foodItems.length, 0);
-        
+        const totalItems =
+          section.foodItems.length +
+          section.subSections.reduce((sum, sub) => sum + sub.foodItems.length, 0);
+      
+        const getImagePath = (sectionId: string) => {
+          switch (sectionId) {
+            case 'hot-drinks':
+              return '/hotdrinks.jpg';
+            case 'snacks':
+              return '/snacks.jpg';
+            case 'juices':
+              return '/juices.jpg';
+            case 'shakes':
+              return '/shakes.jpg';
+            case 'creams':
+              return '/creams.jpg';
+            case 'meat-lovers':
+              return '/meatlovers.jpg';
+            case 'chicken-corner':
+              return '/chickencorner.jpg';
+            case 'cereals':
+              return '/cerials.jpg';
+            case 'potato-treats':
+              return '/potatotreats.jpg';
+            default:
+              return '/default.jpg';
+          }
+        };
+      
         return (
-            <div 
-                className="group relative h-80 md:h-96 lg:h-[200px] overflow-hidden rounded-2xl shadow-xl cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex-col items-center justify-center" 
-                onClick={() => setSelectedSection(section)}
-            >
-                <div className="w-full h-full overflow-hidden">
-                    <img 
-                        src={section.foodItems[0]?.image || section.subSections[0]?.foodItems[0]?.image} 
-                        alt={section.name}
-                        className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                </div>
-                <div className="h-100 absolute bottom-0 left-0 right-0 p-2 text-center translate-y-4 transform transition-transform duration-300 group-hover:translate-y-0">
-                    <h3 className="text-xl font-bold text-white mb-1">{section.name}</h3>
-                    <p className="text-white/90 text-xs opacity-0 group-hover:opacity-100">
-                        {totalItems} items available
-                    </p>
-                </div>
+          <div
+            className="group relative h-80 md:h-96 lg:h-[200px] overflow-hidden rounded-2xl shadow-xl cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex-col items-center justify-center"
+            onClick={() => setSelectedSection(section)}
+            style={{
+              backgroundImage: `url('${getImagePath(section.id)}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="h-100 absolute bottom-0 left-0 right-0 p-2 text-center translate-y-4 transform transition-transform duration-300 group-hover:translate-y-0">
+              <h3 className="text-xl font-bold text-white mb-1">{section.name}</h3>
+              <p className="text-white/90 text-xs opacity-0 group-hover:opacity-100">
+                {totalItems} items available
+              </p>
             </div>
+          </div>
         );
-    };
-
+      };
     const FoodItemCard: React.FC<{ item: FoodItem }> = ({ item }) => (
         <div 
             onClick={() => { setSelectedItem(item); setIsModalOpen(true); }} 
