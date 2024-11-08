@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 
 const testimonialsData = [
   {
-    review: "The food was amazing, and the service was top-notch!",
-    name: "Jane Doe",
-    rating: 5,
-  },
-  {
-    review: "Best dining experience I've ever had!",
-    name: "John Smith",
+    review: "Along bypass Kiambu rd, enjoy the best cool service of Cafe, tea is Worth, waiters r Cool, snacks prepared well.",
+    name: "kamariki kirima ",
     rating: 4,
   },
   {
-    review: "Absolutely loved the ambiance and the food.",
-    name: "Emily Johnson",
+    review: "Best food of my life",
+    name: "clarence henry",
+    rating: 5,
+  },
+  {
+    review: "Good wheelchair accessibility. best atmosphere.",
+    name: "henry",
     rating: 5,
   },
   // Add more reviews as needed
