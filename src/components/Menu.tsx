@@ -185,12 +185,11 @@ const Menu: React.FC = () => {
             className="group bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl relative"
         >
             <div className="aspect-w-16 aspect-h-12 overflow-hidden">
-                <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                />
+            <div className="flex justify-center items-left">
+                <img src="/afticon.png" alt="afticon" className="w-auto h-auto">
+                </img>
+                </div>
+
             </div>
             <div className="p-4 space-y-2">
                 <div className="flex justify-between items-center">

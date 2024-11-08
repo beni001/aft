@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FoodDoodle from './FoodDoodle';
 
 const topItems = [
@@ -12,18 +13,28 @@ const topItems = [
 
 const HeroSection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
 
+  // Cycle through top items every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % topItems.length);
-    }, 3000); // Change active item every 3 seconds
-
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
+  // Function to handle button click
+  const handleExploreMenuClick = () => {
+    const menuSection = document.getElementById('menu');
+    if (menuSection) {
+      menuSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/menu'); // Route navigation if the menu is in a separate page
+    }
+  };
+
   return (
     <div className="relative min-h-[70vh] sm:min-h-[100vh] flex items-center justify-center px-4 py-12 overflow-hidden">
-
       <div className="absolute inset-0 w-full h-full">
         <FoodDoodle />
       </div>
@@ -35,7 +46,10 @@ const HeroSection: React.FC = () => {
           <p className="text-lg sm:text-xl md:text-2xl mb-10 text-white">
             Experience the fusion of traditional African flavors with a modern twist
           </p>
-          <button className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-4 py-2 sm:px-6 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg">
+          <button
+            onClick={handleExploreMenuClick}
+            className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-4 py-2 sm:px-6 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg"
+          >
             Explore Menu
           </button>
         </div>
@@ -56,9 +70,7 @@ const HeroSection: React.FC = () => {
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === activeIndex ? 'bg-white scale-125' : 'bg-white/50'
                 }`}
-                onClick={() => {
-                  setActiveIndex(index);
-                }}
+                onClick={() => setActiveIndex(index)}
                 aria-label={`Select ${item.name}`}
               />
             ))}

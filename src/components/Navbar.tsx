@@ -3,7 +3,6 @@ import { FaCartShopping } from "react-icons/fa6";
 import { FaBars, FaHome, FaUtensils, FaInfoCircle, FaEnvelope } from "react-icons/fa"; 
 import useCart from '../Hooks/useCart';
 
-// Define the structure of a menu item
 interface MenuItem {
   id: number;
   name: string;
@@ -11,7 +10,7 @@ interface MenuItem {
   icon: JSX.Element;
 }
 
-// Define the menu items
+// Define only the needed menu items
 const Menu: MenuItem[] = [
   { id: 1, name: "Home", link: "/#", icon: <FaHome /> },
   { id: 2, name: "Menu", link: "/#menu", icon: <FaUtensils /> },
@@ -22,16 +21,16 @@ const Menu: MenuItem[] = [
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const { cartItems } = useCart(); // Use the cart hook
+  const { cartItems } = useCart();
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
-    if (isMenuOpen) setMenuOpen(false); // Close the menu if open
+    if (isMenuOpen) setMenuOpen(false); 
   };
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
-    if (isDropdownOpen) setDropdownOpen(false); // Close the dropdown if open
+    if (isDropdownOpen) setDropdownOpen(false); 
   };
 
   return (

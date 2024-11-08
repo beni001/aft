@@ -8,41 +8,36 @@ import Testimonials from './components/Testimonials';
 import Gallery from './components/Gallery';
 import ContactUs from './components/ContactUs';
 import Footer from './components/Footer';
+
 function App() {
   return (
     <div className="App">
       <Navbar />
-      <div className="section">
+      {/* Sections with unique IDs */}
+      <div id="home" className="section">
         <HeroSection />
       </div>
-      <div className="section">
+      <div id="menu" className="section">
         <Menu />
       </div>
-      <div className="section">
+      <div id="catering" className="section">
         <CateringServices />
       </div>
-
-      <div className="section">
+      <div id="about" className="section">
         <AboutUs />
       </div>
-      <div className="section">
+      <div id="gallery" className="section">
         <Gallery />
       </div>
-      <div className="section">
+      <div id="testimonials" className="section">
         <Testimonials />
       </div>
-     
-      <div className="section">
+      <div id="contact" className="section">
         <ContactUs />
       </div>
-      <div className="section">
-        <Footer />
-      </div>
-
-      {/* Other components will be added here */}
+      <Footer />
     </div>
   );
 }
-
 
 export default App;

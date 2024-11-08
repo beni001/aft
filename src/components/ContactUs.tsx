@@ -69,35 +69,11 @@ const ContactUs: React.FC = () => {
               <button className="bg-black text-white px-6 py-3 rounded-lg">Submit</button>
             </form>
           </div>
-
-          {/* Make a Reservation Card */}
-          <div className="group bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl relative p-6 w-full md:w-1/2">
-            <h3 className="text-2xl font-semibold mb-4">Make a Reservation</h3>
-            <form onSubmit={handleSubmitReservation} className="flex flex-col space-y-4">
-              <input
-                type="text"
-                placeholder="Name"
-                value={reservationName}
-                onChange={(e) => setReservationName(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg w-full"
-              />
-              <input
-                type="text"
-                placeholder="Date (YYYY-MM-DD)"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg w-full"
-              />
-              <input
-                type="text"
-                placeholder="Time (HH:MM)"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg w-full"
-              />
-              <button type="submit" className="bg-black text-white px-6 py-3 rounded-lg">Book</button>
-            </form>
-          </div>
+           
+         <div>
+          Get in Touch
+          call📞 +254724785413
+         </div>
         </div>
       </div>
     </section>
