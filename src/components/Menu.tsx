@@ -137,23 +137,23 @@ const Menu: React.FC = () => {
         const getImagePath = (sectionId: string) => {
           switch (sectionId) {
             case 'hot-drinks':
-              return '/hotdrinks.jpg';
+              return '/hotdrinks-2.jpg';
             case 'snacks':
-              return '/snacks.jpg';
+              return '/snacks.png';
             case 'juices':
-              return '/juices.jpg';
+              return '/juices.png';
             case 'shakes':
-              return '/shakes.jpg';
+              return '/shakes.png';
             case 'creams':
-              return '/creams.jpg';
+              return '/creams.png';
             case 'meat-lovers':
-              return '/meatlovers.jpg';
+              return '/meatlovers.png';
             case 'chicken-corner':
-              return '/chickencorner.jpg';
+              return '/chickencorner.png';
             case 'cereals':
-              return '/cerials.jpg';
+              return '/cerials.png';
             case 'potato-treats':
-              return '/potatotreats.jpg';
+              return '/potatotreats.png';
             default:
               return '/default.jpg';
           }
