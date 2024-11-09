@@ -137,7 +137,7 @@ const Menu: React.FC = () => {
         const getImagePath = (sectionId: string) => {
           switch (sectionId) {
             case 'hot-drinks':
-              return '/hotdrinks-2.jpg';
+              return '/hotdrinks.png';
             case 'snacks':
               return '/snacks.png';
             case 'juices':
