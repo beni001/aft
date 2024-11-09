@@ -86,7 +86,7 @@ const Testimonials: React.FC = () => {
                 placeholder="Leave a message, if you want"
               />
               <button className="py-3 my-2 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">
-                Rate now
+                
               </button>
             </form>
             <div className="flex items-center justify-center">
