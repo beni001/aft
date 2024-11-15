@@ -43,30 +43,7 @@ const Navbar: React.FC = () => {
             African Fresh Twists
           </a>
 
-          {/* Cart Icon */}
-          <div className="relative">
-            <button
-              onClick={toggleDropdown}
-              className="ml-4 bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-full flex items-center gap-2 transition duration-300"
-            >
-              <FaCartShopping className="text-xl" />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 bg-white text-black shadow-md mt-2 rounded-md z-10">
-                <div className="p-2">
-                  {cartItems.length > 0 ? (
-                    cartItems.map((item, index) => (
-                      <div key={index} className="py-1">
-                        {item.name} - {item.price.toFixed(2)} x {item.quantity}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="py-1">Your cart is empty.</div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+         
 
           {/* Menu Icon for Mobile */}
           <div className="relative sm:hidden">

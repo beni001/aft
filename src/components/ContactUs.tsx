@@ -73,6 +73,10 @@ const ContactUs: React.FC = () => {
          <div>
           Get in Touch
           call📞 +254724785413
+
+                  +254729537719 
+                  
+                  to make your order
          </div>
         </div>
       </div>
