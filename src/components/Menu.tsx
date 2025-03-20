@@ -1,304 +1,126 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Search } from 'lucide-react';
-import { FaCartShopping } from "react-icons/fa6";
-import useCart from '../Hooks/useCart';
-import { menuData } from './data/MenuData';
+import React, { useState, useEffect, FC } from "react";
+import axios from "axios";
+import { Search } from "lucide-react";
+import useCart from "../Hooks/useCart";
+import { menuData } from "./data/MenuData";
+import CategoryCard from "./CategoryCard";
+import FoodItemCard from "./FoodItemCard";
+import MenuSkeleton from "./MenuSkeleton";
+import ErrorDisplay from "./ErrorDisplay";
+import { FoodItem, Section } from "../Types";
+import { sendWhatsAppOrder } from "../utils/whatsappUtils";
 
-interface FoodItem {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    _id?: string;
-}
-
-interface SubSection {
-    id: string;
-    name: string;
-    foodItems: FoodItem[];
-    _id?: string;
-}
-
-interface Section {
-    id: string;
-    name: string;
-    foodItems: FoodItem[];
-    subSections: SubSection[];
-    _id?: string;
-    __v?: number;
-}
-
-interface LoadingState {
+// Define types for props
+type LoadingState = {
     isLoading: boolean;
     error: string | null;
     retry: () => void;
     isUsingStaticData: boolean;
-}
+};
 
-const MenuSkeleton: React.FC = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="animate-pulse">
-                <div className="h-48 bg-gray-200 rounded-xl mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            </div>
-        ))}
-    </div>
-);
+type MenuProps = {
+    sections: Section[];
+    loadingState: LoadingState;
+};
 
-const ErrorDisplay: React.FC<{ error: string; onRetry: () => void; isUsingStaticData: boolean }> = 
-    ({ error, onRetry, isUsingStaticData }) => (
-    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
-        <div className="flex">
-            <div className="flex-1">
-                <p className="text-yellow-700">{error}</p>
-                {isUsingStaticData && (
-                    <p className="text-yellow-600 text-sm mt-1">
-                        🥢 
-                    </p>
-                    //this is when the app is showing catched data 
-                )}
-            </div>
-            {!isUsingStaticData && (
-                <button 
-                    onClick={onRetry}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                    Try Again
-                </button>
-            )}
-        </div>
-    </div>
-);
-
-const Menu: React.FC = () => {
-    const { cartItems, addItemToCart } = useCart(); // Use the cart hook
-    const [sections, setSections] = useState<Section[]>([]);
+const Menu: FC<MenuProps> = ({ sections, loadingState }) => {
+    const whatsappNumber = process.env.REACT_APP_WHATSAPP_NUMBER || "";
+    const { addItemToCart } = useCart();
     const [selectedSection, setSelectedSection] = useState<Section | null>(null);
     const [selectedItem, setSelectedItem] = useState<FoodItem | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [loadingState, setLoadingState] = useState<LoadingState>({
-        isLoading: true,
-        error: null,
-        retry: () => {},
-        isUsingStaticData: false
-    });
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
-    const fetchData = async () => {
-        setLoadingState(prev => ({ ...prev, isLoading: true, error: null, isUsingStaticData: false }));
-        try {
-            const response = await axios.get('http://localhost:5000/api/sections');
-            setSections(response.data);
-            setLoadingState(prev => ({ ...prev, isLoading: false }));
-        } catch (error) {
-            console.log('API fetch failed, falling back to static data');
-            setSections(menuData);
-            setLoadingState(prev => ({
-                ...prev,
-                isLoading: false,
-                error: '🍤',
-                isUsingStaticData: true
-            }));
-        }
+    const filterItems = (items: FoodItem[]): FoodItem[] =>
+        items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const getAllItems = (): FoodItem[] => {
+        return sections.flatMap(section => [
+            ...section.foodItems,
+            ...section.subSections.flatMap(subSection => subSection.foodItems)
+        ]).filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
     };
 
-    useEffect(() => {
-        setLoadingState(prev => ({ ...prev, retry: fetchData }));
-        fetchData();
-    }, []);
-
-    // Filter function for search
-    const filterItems = (items: FoodItem[]) => {
-        return items.filter(item =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    };
-
-    // Get all items for search when no section is selected
-    const getAllItems = () => {
-        let allItems: FoodItem[] = [];
-        sections.forEach(section => {
-            allItems = [...allItems, ...section.foodItems];
-            section.subSections.forEach(subSection => {
-                allItems = [...allItems, ...subSection.foodItems];
-            });
-        });
-        return filterItems(allItems);
-    };
-
-    const CategoryCard: React.FC<{ section: Section }> = ({ section }) => {
-        const totalItems =
-          section.foodItems.length +
-          section.subSections.reduce((sum, sub) => sum + sub.foodItems.length, 0);
-      
-        const getImagePath = (sectionId: string) => {
-          switch (sectionId) {
-            case 'hot-drinks':
-              return '/hotdrinks.png';
-            case 'snacks':
-              return '/snacks.png';
-            case 'juices':
-              return '/juices.png';
-            case 'shakes':
-              return '/shakes.png';
-            case 'creams':
-              return '/creams.png';
-            case 'meat-lovers':
-              return '/meatlovers.png';
-            case 'chicken-corner':
-              return '/chickencorner.png';
-            case 'cereals':
-              return '/cerials.png';
-            case 'potato-treats':
-              return '/potatotreats.png';
-            default:
-              return '/default.jpg';
-          }
-        };
-      
-        return (
-          <div
-            className="group relative h-80 md:h-96 lg:h-[200px] overflow-hidden rounded-2xl shadow-xl cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex-col items-center justify-center"
-            onClick={() => setSelectedSection(section)}
-            style={{
-              backgroundImage: `url('${getImagePath(section.id)}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-            <div className="h-100 absolute bottom-0 left-0 right-0 p-2 text-center translate-y-4 transform transition-transform duration-300 group-hover:translate-y-0">
-              <h3 className="text-xl font-bold text-white mb-1">{section.name}</h3>
-              <p className="text-white/90 text-xs opacity-0 group-hover:opacity-100">
-                {totalItems} items available
-              </p>
-            </div>
-          </div>
-        );
-      };
-    const FoodItemCard: React.FC<{ item: FoodItem }> = ({ item }) => (
-        <div 
-            onClick={() => { setSelectedItem(item); setIsModalOpen(true); }} 
-            className="group bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl relative"
-        >
-            <div className="aspect-w-16 aspect-h-12 overflow-hidden">
-            <div className="flex justify-center items-left">
-                <img src="/afticon.png" alt="afticon" className="w-auto h-auto">
-                </img>
-                </div>
-
-            </div>
-            <div className="p-4 space-y-2">
-                <div className="flex justify-between items-center">
-                    <h4 className="font-semibold text-gray-800 group-hover:text-gray-900 transition-colors duration-300">
-                        {item.name}
-                    </h4>
-                    <span className="text-green-600 font-bold transition-colors duration-300 group-hover:text-green-500">
-                        KSH.{item.price.toFixed(2)}
-                    </span>
-                </div>
-            </div>
-            <button 
-            onClick={(e) => { 
-                e.stopPropagation(); 
-                addItemToCart({ id: item.id, name: item.name, price: item.price, quantity: 1 });
-            }} 
-            className="absolute top-2 right-2 bg-green-600 text-white p-2 rounded-full shadow-lg hover:bg-green-500 transition duration-300"
-            >
-            <FaCartShopping className="text-xl" />
-            </button>
-
-
-
-        </div>
-    );
-
-    if (loadingState.isLoading) {
-        return <MenuSkeleton />;
-    }
+    if (loadingState.isLoading) return <MenuSkeleton />;
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {loadingState.error && (
-                    <ErrorDisplay 
-                        error={loadingState.error} 
+                    <ErrorDisplay
+                        error={loadingState.error}
                         onRetry={loadingState.retry}
                         isUsingStaticData={loadingState.isUsingStaticData}
                     />
                 )}
-
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-900">Our Menu</h2>
+                    <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-gray-800">Our Menu</h2>
                     <p className="mt-4 text-lg text-gray-600">Discover our delicious offerings...</p>
                 </div>
-
-                {/* Search Bar */}
                 <div className="relative max-w-md mx-auto mb-8">
                     <input
                         type="text"
                         placeholder="Search menu items..."
                         className="w-full px-4 py-2 border rounded-lg pl-10"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                     />
                     <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
                 </div>
-
-                {/* Category Navigation */}
                 <div className="flex overflow-x-auto mb-8 space-x-4 pb-2 scrollbar-hide">
                     <button
                         onClick={() => setSelectedSection(null)}
                         className={`whitespace-nowrap px-6 py-2 rounded-full border ${
-                            !selectedSection 
-                                ? 'bg-green-600 text-white' 
-                                : 'border-gray-300 text-gray-700 hover:bg-gray-200'
+                            !selectedSection
+                                ? "bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black font-medium"
+                                : "border-gray-300 text-gray-700 hover:bg-gray-200"
                         } transition-colors duration-300`}
                     >
                         All Categories
                     </button>
-                    {sections.map((section) => (
-                        <button 
-                            key={section.id} 
+                    {sections.map(section => (
+                        <button
+                            key={section.id}
                             onClick={() => setSelectedSection(section)}
                             className={`whitespace-nowrap px-6 py-2 rounded-full border ${
-                                selectedSection?.id === section.id 
-                                    ? 'bg-green-600 text-white' 
-                                    : 'border-gray-300 text-gray-700 hover:bg-gray-200'
+                                selectedSection?.id === section.id
+                                    ? "bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black font-medium"
+                                    : "border-gray-300 text-gray-700 hover:bg-gray-200"
                             } transition-colors duration-300`}
                         >
                             {section.name}
                         </button>
                     ))}
                 </div>
-
-                {/* Menu Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {searchTerm ? (
-                        // Show search results
-                        getAllItems().map((item) => (
-                            <FoodItemCard key={item.id} item={item} />
+                        getAllItems().map(item => (
+                            <FoodItemCard
+                                key={item.id}
+                                item={item}
+                                onWhatsappOrder={() => sendWhatsAppOrder(item, whatsappNumber)}
+                                onClick={() => {
+                                    setSelectedItem(item);
+                                    setIsModalOpen(true);
+                                }}
+                            />
                         ))
                     ) : !selectedSection ? (
-                        // Show categories
-                        sections.map((section) => (
-                            <CategoryCard key={section.id} section={section} />
+                        sections.map(section => (
+                            <CategoryCard key={section.id} section={section} onClick={() => setSelectedSection(section)} />
                         ))
                     ) : (
-                        // Show selected category items
-                        <>
-                            {filterItems(selectedSection.foodItems).map((item) => (
-                                <FoodItemCard key={item.id} item={item} />
-                            ))}
-                            {selectedSection.subSections.map((subSection) => (
-                                filterItems(subSection.foodItems).map((item) => (
-                                    <FoodItemCard key={item.id} item={item} />
-                                ))
-                            ))}
-                        </>
+                        [...selectedSection.foodItems, ...selectedSection.subSections.flatMap(sub => sub.foodItems)].map(item => (
+                            <FoodItemCard
+                                key={item.id}
+                                item={item}
+                                onWhatsappOrder={() => sendWhatsAppOrder(item, whatsappNumber)}
+                                onClick={() => {
+                                    setSelectedItem(item);
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        ))
                     )}
                 </div>
             </div>

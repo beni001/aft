@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FoodDoodle from './FoodDoodle';
+import { ReactTyped } from 'react-typed';
 
 const topItems = [
   { id: 1, name: 'Beef Chapati 🥩🍞', icon: '🥩🍞' },
@@ -11,70 +11,84 @@ const topItems = [
   { id: 6, name: 'Rice Coconut Beans 🍚🥥', icon: '🍚🥥' },
 ];
 
-const HeroSection: React.FC = () => {
+const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeVideo, setActiveVideo] = useState('mixvid.mp4');
   const navigate = useNavigate();
 
-  // Cycle through top items every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % topItems.length);
+      setActiveIndex((prevIndex) => {
+        const newIndex = (prevIndex + 1) % topItems.length;
+        setActiveVideo(
+          topItems[newIndex].name.includes('Beef') || topItems[newIndex].name.includes('Mbuzi')
+            ? 'meatvid.mp4'
+            : 'mixvid.mp4'
+        );
+        return newIndex;
+      });
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // Function to handle button click
   const handleExploreMenuClick = () => {
     const menuSection = document.getElementById('menu');
     if (menuSection) {
       menuSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-      navigate('/menu'); // Route navigation if the menu is in a separate page
+      navigate('/menu');
     }
   };
 
   return (
-    <div className="relative min-h-[70vh] sm:min-h-[100vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
-        <FoodDoodle />
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          key={activeVideo}
+          src={`/${activeVideo}`}
+        />
+        {/* Watermark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e8ac07][#0fe807] via-[#0fe807] to-white opacity-40 pointer-events-none"></div>
+        {/* Dark Overlay for Better Readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
       </div>
+
+      {/* Content */}
       <div className="relative z-10 max-w-6xl w-full flex flex-col md:flex-row items-center justify-between text-center md:text-left">
         <div className="md:w-1/2 mb-10 md:mb-0 flex flex-col items-center md:items-start">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white">
-            African Fresh Twists
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white">
+            <span className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white bg-clip-text text-transparent">
+              <ReactTyped
+                strings={['African Fresh Twists', 'Traditional Flavors', 'Modern African Cuisine']}
+                typeSpeed={70}
+                backSpeed={50}
+                loop
+                showCursor
+                cursorChar="|"
+              />
+            </span>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-10 text-white">
-            Experience the fusion of traditional African flavors with a modern twist
+            Experience Authentic African Food with a Fresh Twist
           </p>
           <button
             onClick={handleExploreMenuClick}
-            className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-4 py-2 sm:px-6 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg"
+            className="bg-gradient-to-r from-[#0fe807] via-[#e8ac07] to-white text-black px-6 py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg"
           >
             Explore Menu
           </button>
         </div>
 
-        <div className="md:w-1/2 relative">
-          <div className="absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out">
-            <span className={`text-5xl sm:text-6xl md:text-7xl mb-2 sm:mb-4 animate-bounce`}>
-              {topItems[activeIndex].icon}
-            </span>
-            <span className={`text-lg sm:text-xl md:text-2xl font-semibold text-white`}>
-              {topItems[activeIndex].name}
-            </span>
-          </div>
-          <div className="flex justify-center space-x-2 mt-4 h-40">
-            {topItems.map((item, index) => (
-              <button
-                key={item.id}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === activeIndex ? 'bg-white scale-125' : 'bg-white/50'
-                }`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Select ${item.name}`}
-              />
-            ))}
-          </div>
+        {/* Animated Icons & Item Names */}
+        <div className="md:w-1/2 flex flex-col items-center">
+          <span className="text-6xl md:text-7xl mb-4 animate-bounce">{topItems[activeIndex].icon}</span>
+          <span className="text-xl md:text-2xl font-semibold text-white">{topItems[activeIndex].name}</span>
         </div>
       </div>
     </div>
