@@ -70,7 +70,7 @@ const Menu: FC<MenuProps> = ({ sections, loadingState }) => {
           case 'chicken-corner':
             return '/chickencorner.png';
           case 'cereals':
-            return '/cereals.png';
+            return '/cerials.jpg';
           case 'potato-treats':
             return '/potatotreats.png';
           default:
