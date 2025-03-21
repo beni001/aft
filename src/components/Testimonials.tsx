@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 const testimonialsData = [
   {
-    review: "Along bypass Kiambu rd, enjoy the best cool service of Cafe, tea is Worth, waiters r Cool, snacks prepared well.",
+    review:
+      "Along bypass Kiambu rd, enjoy the best cool service of Cafe, tea is Worth, waiters r Cool, snacks prepared well.",
     name: "kamariki kirima ",
     rating: 4,
   },
@@ -16,35 +18,59 @@ const testimonialsData = [
     name: "henry",
     rating: 5,
   },
-  // Add more reviews as needed
 ];
 
 const Testimonials: React.FC = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [userReview, setUserReview] = useState('');
+  const [userReview, setUserReview] = useState("");
   const [userRating, setUserRating] = useState(0);
 
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle the review submission logic here
     alert(`Review submitted: ${userReview} with a rating of ${userRating} stars`);
-    setUserReview('');
+    setUserReview("");
     setUserRating(0);
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white via-[#e8ac07] to-white text-black">
+    <motion.section
+      className="py-16 bg-gradient-to-b from-white via-[#e8ac07] to-white text-black"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-8">Customer Reviews</h2>
+        <motion.h2
+          className="text-4xl font-bold text-center mb-8"
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Customer Reviews
+        </motion.h2>
 
-        <div className="flex overflow-x-auto space-x-4 py-4">
+        <motion.div
+          className="flex overflow-x-auto space-x-4 py-4"
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          transition={{ duration: 1.2, type: "spring" }}
+        >
           {testimonialsData.map((testimonial, index) => (
-            <div key={index} className="min-w-[300px] bg-white p-6 rounded-lg shadow-md">
+            <motion.div
+              key={index}
+              className="min-w-[300px] bg-white p-6 rounded-lg shadow-md"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+            >
               <div className="flex items-center mb-2">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
-                    className={`w-6 h-6 ${i < testimonial.rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                    className={`w-6 h-6 ${
+                      i < testimonial.rating ? "text-yellow-500" : "text-gray-300"
+                    }`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -55,20 +81,31 @@ const Testimonials: React.FC = () => {
               </div>
               <p className="italic">"{testimonial.review}"</p>
               <p className="text-right mt-4">- {testimonial.name}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {showReviewForm ? (
-          <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-semibold text-center mb-4">Your Opinion Matters to Us!</h3>
+          <motion.div
+            className="mt-8 bg-white rounded-lg shadow-lg p-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3 className="text-2xl font-semibold text-center mb-4">
+              Your Opinion Matters to Us!
+            </h3>
             <form onSubmit={handleReviewSubmit} className="flex flex-col items-center">
-              <span className="text-lg text-gray-800 mb-2">How would you rate your experience?</span>
+              <span className="text-lg text-gray-800 mb-2">
+                How would you rate your experience?
+              </span>
               <div className="flex mb-4">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
-                    className={`w-8 h-8 cursor-pointer ${i < userRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                    className={`w-8 h-8 cursor-pointer ${
+                      i < userRating ? "text-yellow-500" : "text-gray-300"
+                    }`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -86,20 +123,27 @@ const Testimonials: React.FC = () => {
                 placeholder="Leave a message, if you want"
               />
               <button className="py-3 my-2 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">
-                
+                Submit Review
               </button>
             </form>
             <div className="flex items-center justify-center">
-              <button className="text-gray-600" onClick={() => setShowReviewForm(false)}>Maybe later</button>
+              <button className="text-gray-600" onClick={() => setShowReviewForm(false)}>
+                Maybe later
+              </button>
             </div>
-          </div>
+          </motion.div>
         ) : (
-          <div className="mt-8 text-center">
-            <button className="text-lg text-blue-500" onClick={() => setShowReviewForm(true)}>Leave a Review</button>
-          </div>
+          <motion.div className="mt-8 text-center">
+            <button
+              className="text-lg text-blue-500"
+              onClick={() => setShowReviewForm(true)}
+            >
+              Leave a Review
+            </button>
+          </motion.div>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 };
 
